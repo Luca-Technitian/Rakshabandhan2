@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Very Serious Quiz for My Sisters</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0, #e1bee7);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 35px 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+
+    h2 {
+      color: #ad1457;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      line-height: 1.4;
+    }
+
+    .range-container {
+      margin: 25px 0;
+    }
+
+    input[type="range"] {
+      width: 80%;
+      accent-color: #e91e63;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 5px auto 0;
+      font-weight: bold;
+      color: #6a1b9a;
+    }
+
+    .btn {
+      background-color: #e91e63;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.15s, background-color 0.2s;
+      margin: 8px;
+    }
+
+    .btn:hover {
+      background-color: #c2185b;
+      transform: scale(1.04);
+    }
+
+    .choice-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .score-badge {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ad1457;
+      margin: 20px 0;
+    }
+
+    /* Moving No Button Arena */
+    .arena {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      margin-top: 20px;
+    }
+
+    #btn-yes {
+      position: absolute;
+      left: 15%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #btn-no {
+      position: absolute;
+      right: 15%;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #78909c;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- Step 1: Love Scale -->
+    <div id="step-1">
+      <h2>Please let me know how much do you love me? ❤️</h2>
+      <div class="range-container">
+        <input type="range" min="100" max="100" value="100" />
+        <div class="scale-labels">
+          <span>100%</span>
+          <span>100%</span>
+        </div>
+      </div>
+      <button class="btn" onclick="goToStep(2)">Next</button>
+    </div>
+
+    <!-- Step 2: Karma Statement -->
+    <div id="step-2" class="hidden">
+      <h2>"I'm yours purane janam k acche karmo ka phal." ✨<br><br>Rate this statement:</h2>
+      <div class="range-container">
+        <input type="range" min="100" max="100" value="100" />
+        <div class="scale-labels">
+          <span>100%</span>
+          <span>100%</span>
+        </div>
+      </div>
+      <button class="btn" onclick="goToStep(3)">Next</button>
+    </div>
+
+    <!-- Step 3: Identity Selection -->
+    <div id="step-3" class="hidden">
+      <h2>Please select who is taking this test:</h2>
+      <div class="choice-group">
+        <button class="btn" onclick="selectRole('Behan')">Behan</button>
+        <button class="btn" onclick="selectRole('Didi')">Didi</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Score Card -->
+    <div id="step-4" class="hidden">
+      <h2>Official Love Score Calculated!</h2>
+      <div class="score-badge">1000/100%</div>
+      <p style="color: #4a148c; font-size: 1.1rem; margin-bottom: 20px;">
+        You love your brother unconditionally! 🎉
+      </p>
+      <button class="btn" onclick="goToStep(5)">Claim Brother's Blessing</button>
+    </div>
+
+    <!-- Step 5: The Trap Question -->
+    <div id="step-5" class="hidden">
+      <h2 id="final-question">Will you buy this for me?</h2>
+      <div class="arena" id="button-arena">
+        <button class="btn" id="btn-yes" onclick="showCelebration()">YES! 🎉</button>
+        <button class="btn" id="btn-no" onmouseover="dodgeNo()" onclick="dodgeNo()">No</button>
+      </div>
+    </div>
+
+    <!-- Step 6: Final Success Screen -->
+    <div id="step-6" class="hidden">
+      <h2>Yay! Deal Sealed! 🤝🎁</h2>
+      <p style="color: #388e3c; font-size: 1.2rem; font-weight: 600; margin: 20px 0;">
+        Screenshot taken & saved as legally binding contract!
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let selectedRole = '';
+
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.card > div').forEach(div => div.classList.add('hidden'));
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+    }
+
+    function selectRole(role) {
+      selectedRole = role;
+      const questionEl = document.getElementById('final-question');
+      
+      if (role === 'Behan') {
+        questionEl.innerText = "Will you buy a new iPhone for me? 📱";
+      } else {
+        questionEl.innerText = "Will you buy me an MT Bike? 🏍️";
+      }
+      
+      goToStep(4);
+    }
+
+    function dodgeNo() {
+      const btnNo = document.getElementById('btn-no');
+      const arena = document.getElementById('button-arena');
+      
+      const arenaRect = arena.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
+
+      const maxX = arenaRect.width - btnRect.width;
+      const maxY = arenaRect.height - btnRect.height;
+
+      const randomX = Math.max(0, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(0, Math.floor(Math.random() * maxY));
+
+      btnNo.style.left = `${randomX}px`;
+      btnNo.style.top = `${randomY}px`;
+      btnNo.style.transform = 'none';
+    }
+
+    function showCelebration() {
+      goToStep(6);
+    }
+  </script>
+</body>
+</html>  
